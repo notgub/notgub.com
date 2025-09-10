@@ -1,27 +1,29 @@
-import "./globals.css";
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import { Analytics } from "@vercel/analytics/react";
-import { SpeedInsights } from "@vercel/speed-insights/next";
-import { ThemeProvider } from "./components/theme-switch";
-import { metaData } from "./lib/config";
-
-const inter = Inter({ subsets: ["latin"] });
+import "../global.css";
+import { Inter } from "@next/font/google";
+import LocalFont from "@next/font/local";
+import { Metadata } from "next";
+import { Analytics } from "./components/analytics";
 
 export const metadata: Metadata = {
-  metadataBase: new URL(metaData.baseUrl),
   title: {
-    default: metaData.title,
-    template: `%s | ${metaData.title}`,
+    default: "notgub.com",
+    template: "%s | notgub.com",
   },
-  description: metaData.description,
+  description: "Co-founder of unkey.dev and founder of planetfall.io",
   openGraph: {
-    images: metaData.ogImage,
-    title: metaData.title,
-    description: metaData.description,
-    url: metaData.baseUrl,
-    siteName: metaData.name,
-    locale: "en_US",
+    title: "notgub.com",
+    description:
+      "Co-founder of unkey.dev and founder of planetfall.io",
+    url: "https://notgub.com",
+    siteName: "notgub.com",
+    images: [
+      {
+        url: "https://notgub.com/og.png",
+        width: 1920,
+        height: 1080,
+      },
+    ],
+    locale: "en-US",
     type: "website",
   },
   robots: {
@@ -36,13 +38,22 @@ export const metadata: Metadata = {
     },
   },
   twitter: {
-    title: metaData.name,
+    title: "Chronark",
     card: "summary_large_image",
   },
   icons: {
-    icon: "/favicon.ico",
+    shortcut: "/favicon.png",
   },
 };
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+});
+
+const calSans = LocalFont({
+  src: "../public/fonts/CalSans-SemiBold.ttf",
+  variable: "--font-calsans",
+});
 
 export default function RootLayout({
   children,
@@ -50,38 +61,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${inter.className}`} suppressHydrationWarning>
+    <html lang="en" className={[inter.variable, calSans.variable].join(" ")}>
       <head>
-        <link
-          rel="alternate"
-          type="application/rss+xml"
-          href="/rss.xml"
-          title="RSS Feed"
-        />
-        <link
-          rel="alternate"
-          type="application/atom+xml"
-          href="/atom.xml"
-          title="Atom Feed"
-        />
-        <link
-          rel="alternate"
-          type="application/feed+json"
-          href="/feed.json"
-          title="JSON Feed"
-        />
+        <Analytics />
       </head>
-      <body className="antialiased">
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          {children}
-          <Analytics />
-          <SpeedInsights />
-        </ThemeProvider>
+      <body
+        className={`bg-black ${process.env.NODE_ENV === "development" ? "debug-screens" : undefined
+          }`}
+      >
+        {children}
       </body>
     </html>
   );

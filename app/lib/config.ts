@@ -1,10 +1,10 @@
 export const metaData = {
   baseUrl: "https://notgub.com/",
-  title: "notgub.com",
+  title: "notgub",
   name: "notgub.com",
   ogImage: "/opengraph-image.png",
-  description:
-    "notgub.com",
+  description: "notgub.com",
+  myName: "Chanchai Thaiyanon"
 };
 
 export const socialLinks = {

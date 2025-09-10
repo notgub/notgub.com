@@ -39,7 +39,7 @@ export async function generateMetadata({
       description,
       type: "article",
       publishedTime,
-      url: `${metaData.baseUrl}/blog/${post.slug}`,
+      url: `${metaData.baseUrl}/portfolio/blog/${post.slug}`,
       images: [
         {
           url: ogImage,
@@ -79,7 +79,7 @@ export default async function Blog({ params }) {
             image: post.metadata.image
               ? `${metaData.baseUrl}${post.metadata.image}`
               : `/og?title=${encodeURIComponent(post.metadata.title)}`,
-            url: `${metaData.baseUrl}/blog/${post.slug}`,
+            url: `${metaData.baseUrl}/portfolio/blog/${post.slug}`,
             author: {
               "@type": "Person",
               name: metaData.name,

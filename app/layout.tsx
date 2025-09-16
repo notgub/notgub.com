@@ -1,29 +1,29 @@
-import "../global.css";
-import { Inter } from "@next/font/google";
-import LocalFont from "@next/font/local";
-import { Metadata } from "next";
-import { Analytics } from "./components/analytics";
+import "./globals.css";
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import { Navbar } from "./components/nav";
+import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
+import Footer from "./components/footer";
+import { ThemeProvider } from "./components/theme-switch";
+import { metaData } from "./lib/config";
+
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(metaData.baseUrl),
   title: {
-    default: "notgub.com",
-    template: "%s | notgub.com",
+    default: metaData.title,
+    template: `%s | ${metaData.title}`,
   },
-  description: "Co-founder of unkey.dev and founder of planetfall.io",
+  description: metaData.description,
   openGraph: {
-    title: "notgub.com",
-    description:
-      "Co-founder of unkey.dev and founder of planetfall.io",
-    url: "https://notgub.com",
-    siteName: "notgub.com",
-    images: [
-      {
-        url: "https://notgub.com/og.png",
-        width: 1920,
-        height: 1080,
-      },
-    ],
-    locale: "en-US",
+    images: metaData.ogImage,
+    title: metaData.title,
+    description: metaData.description,
+    url: metaData.baseUrl,
+    siteName: metaData.name,
+    locale: "en_US",
     type: "website",
   },
   robots: {
@@ -38,22 +38,13 @@ export const metadata: Metadata = {
     },
   },
   twitter: {
-    title: "Chronark",
+    title: metaData.name,
     card: "summary_large_image",
   },
   icons: {
-    shortcut: "/favicon.png",
+    icon: "/favicon.ico",
   },
 };
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-});
-
-const calSans = LocalFont({
-  src: "../public/fonts/CalSans-SemiBold.ttf",
-  variable: "--font-calsans",
-});
 
 export default function RootLayout({
   children,
@@ -61,15 +52,42 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={[inter.variable, calSans.variable].join(" ")}>
+    <html lang="en" className={`${inter.className}`}>
       <head>
-        <Analytics />
+        <link
+          rel="alternate"
+          type="application/rss+xml"
+          href="/rss.xml"
+          title="RSS Feed"
+        />
+        <link
+          rel="alternate"
+          type="application/atom+xml"
+          href="/atom.xml"
+          title="Atom Feed"
+        />
+        <link
+          rel="alternate"
+          type="application/feed+json"
+          href="/feed.json"
+          title="JSON Feed"
+        />
       </head>
-      <body
-        className={`bg-black ${process.env.NODE_ENV === "development" ? "debug-screens" : undefined
-          }`}
-      >
-        {children}
+      <body className="antialiased flex flex-col items-center justify-center mx-auto mt-2 lg:mt-8 mb-12">
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <main className="flex-auto min-w-0 mt-2 md:mt-6 flex flex-col px-6 sm:px-4 md:px-0 max-w-[624px] w-full">
+            <Navbar />
+            {children}
+            <Footer />
+            <Analytics />
+            <SpeedInsights />
+          </main>
+        </ThemeProvider>
       </body>
     </html>
   );

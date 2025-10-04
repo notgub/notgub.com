@@ -1,0 +1,54 @@
+[
+  {
+    "ParameterKey": "ECSClusterName",
+    "ParameterValue": "web-service-cluster-staging"
+  },
+  {
+    "ParameterKey": "VpcID",
+    "ParameterValue": "vpc-01670d7749c3331ee"
+  },
+  {
+    "ParameterKey": "ECSServiceName",
+    "ParameterValue": "web-service-staging"
+  },
+  {
+    "ParameterKey": "SecurityGroupIDs",
+    "ParameterValue": "sg-044d48d6559b10c8e"
+  },
+  {
+    "ParameterKey": "SubnetIDs",
+    "ParameterValue": "subnet-0d36fa138bdd193ad,subnet-09baba5dd1e565223,subnet-0216004e43c997b1c"
+  },
+  {
+    "ParameterKey": "LoadBalancerName",
+    "ParameterValue": "web-service-alb-staging"
+  },
+  {
+    "ParameterKey": "ContainerImage",
+    "ParameterValue": "235494814246.dkr.ecr.ap-southeast-7.amazonaws.com/web-service:staging"
+  },
+  {
+    "ParameterKey": "ContainerPort",
+    "ParameterValue": "3000"
+  },
+  {
+    "ParameterKey": "TaskCPU",
+    "ParameterValue": "1024"
+  },
+  {
+    "ParameterKey": "TaskMemory",
+    "ParameterValue": "2048"
+  },
+  {
+    "ParameterKey": "DesiredCount",
+    "ParameterValue": "2"
+  },
+  {
+    "ParameterKey": "ExecutionRoleArn",
+    "ParameterValue": "arn:aws:iam::235494814246:role/ecsTaskExecutionRole"
+  },
+  {
+    "ParameterKey": "TaskRoleArn",
+    "ParameterValue": "arn:aws:iam::235494814246:role/ecsTaskExecutionRole"
+  }
+] 

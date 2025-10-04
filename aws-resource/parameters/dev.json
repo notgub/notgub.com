@@ -33,11 +33,11 @@
   },
   {
     "ParameterKey": "TaskCPU",
-    "ParameterValue": "512"
+    "ParameterValue": "256"
   },
   {
     "ParameterKey": "TaskMemory",
-    "ParameterValue": "1024"
+    "ParameterValue": "512"
   },
   {
     "ParameterKey": "DesiredCount",

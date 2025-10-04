@@ -1,0 +1,320 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: The template used to create an ECS Cluster from the ECS Console.
+
+Parameters:
+  ECSClusterName:
+    Type: String
+    Default: example-service-cluster
+    Description: The name of the ECS cluster to deploy the service to
+
+  VpcID:
+    Type: String
+    Default: vpc-01670d7749c3331ee
+    Description: The VPC ID to deploy the service to
+
+  ECSServiceName:
+    Type: String
+    Default: my-family-task-service-ey5v6cyh
+    Description: The name of the ECS service to deploy the task to
+
+  SecurityGroupIDs:
+    Type: CommaDelimitedList
+    Default: sg-044d48d6559b10c8e
+    Description: The security group IDs to deploy the service to
+
+  SubnetIDs:
+    Type: CommaDelimitedList
+    Default: subnet-0d36fa138bdd193ad,subnet-09baba5dd1e565223,subnet-0216004e43c997b1c
+    Description: The subnet IDs to deploy the service to
+
+  LoadBalancerName:
+    Type: String
+    Default: example-service-alb
+    Description: The name of the load balancer to deploy the service to
+
+  TargetGroupName:
+    Type: String
+    Default: example-service-tg
+    Description: The name of the target group to deploy the service to
+
+  ContainerImage:
+    Type: String
+    Default: 235494814246.dkr.ecr.ap-southeast-7.amazonaws.com/example-web-app:latest
+    Description: The container image to deploy
+
+  ContainerPort:
+    Type: Number
+    Default: 3000
+    Description: The port the container listens on
+
+  TaskCPU:
+    Type: String
+    Default: "512"
+    AllowedValues:
+      - "256"
+      - "512"
+      - "1024"
+      - "2048"
+      - "4096"
+    Description: The number of CPU units to reserve for the task
+
+  TaskMemory:
+    Type: String
+    Default: "1024"
+    AllowedValues:
+      - "512"
+      - "1024"
+      - "2048"
+      - "3072"
+      - "4096"
+      - "5120"
+      - "6144"
+      - "7168"
+      - "8192"
+    Description: The amount of memory to reserve for the task
+
+  DesiredCount:
+    Type: Number
+    Default: 1
+    MinValue: 1
+    MaxValue: 10
+    Description: The desired number of tasks to run
+
+  ExecutionRoleArn:
+    Type: String
+    Default: arn:aws:iam::235494814246:role/ecsTaskExecutionRole
+    Description: The ARN of the IAM role that allows ECS to pull container images and publish logs
+
+  TaskRoleArn:
+    Type: String
+    Default: arn:aws:iam::235494814246:role/ecsTaskExecutionRole
+    Description: The ARN of the IAM role that the task can use to make API calls
+
+  LogGroupName:
+    Type: String
+    Default: /ecs/example-service
+    Description: The name of the CloudWatch log group to deploy the service to
+
+  HostedZoneId:
+    Type: String
+    Default: Z10459443ELUEU0JLZOZP
+    Description: The ID of the existing Route 53 hosted zone for notgub.com
+  
+  SSLCertificateArn:
+    Type: String
+    Default: arn:aws:acm:ap-southeast-7:235494814246:certificate/7e472511-223b-4078-af84-7498204988a0
+    Description: The ARN of the SSL certificate for HTTPS listener
+
+Resources:
+  ECSCluster:
+    Type: AWS::ECS::Cluster
+    Properties:
+      ClusterName: !Ref ECSClusterName
+      CapacityProviders:
+        - FARGATE
+      ClusterSettings:
+        - Name: containerInsights
+          Value: disabled
+      Tags:
+        - Key: Environment
+          Value: !Ref AWS::StackName
+        - Key: Service
+          Value: example-service
+
+  CloudWatchLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Ref LogGroupName
+      RetentionInDays: 30
+      Tags:
+        - Key: Environment
+          Value: !Ref AWS::StackName
+        - Key: Service
+          Value: example-service
+
+  ARecord:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId: !Ref HostedZoneId
+      Name: notgub.com
+      Type: A
+      AliasTarget:
+        DNSName: !GetAtt LoadBalancer.DNSName
+        HostedZoneId: !GetAtt LoadBalancer.CanonicalHostedZoneID
+
+  TaskDefinition:
+    Type: AWS::ECS::TaskDefinition
+    Properties:
+      Family: !Ref ECSClusterName
+      Cpu: !Ref TaskCPU
+      Memory: !Ref TaskMemory
+      NetworkMode: awsvpc
+      RequiresCompatibilities:
+        - FARGATE
+      RuntimePlatform:
+        CpuArchitecture: ARM64
+        OperatingSystemFamily: LINUX
+      ExecutionRoleArn: !Ref ExecutionRoleArn
+      TaskRoleArn: !Ref TaskRoleArn
+      ContainerDefinitions:
+        - Name: nextjs
+          Image: !Ref ContainerImage
+          PortMappings:
+            - ContainerPort: !Ref ContainerPort
+              Protocol: tcp
+          Essential: true
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-group: !Ref LogGroupName
+              awslogs-region: ap-southeast-7
+              awslogs-stream-prefix: ecs
+          Environment:
+            - Name: NODE_ENV
+              Value: production
+      Tags:
+        - Key: Environment
+          Value: !Ref AWS::StackName
+        - Key: Service
+          Value: example-service
+
+  LoadBalancer:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      Type: application
+      Name: !Ref LoadBalancerName
+      SecurityGroups: !Ref SecurityGroupIDs
+      Subnets: !Ref SubnetIDs
+      Tags:
+        - Key: Environment
+          Value: !Ref AWS::StackName
+        - Key: Service
+          Value: example-service
+
+  TargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      HealthCheckPath: /
+      Name: !Ref TargetGroupName
+      Port: 80
+      Protocol: HTTP
+      TargetType: ip
+      HealthCheckProtocol: HTTP
+      VpcId: !Ref VpcID
+      TargetGroupAttributes:
+        - Key: deregistration_delay.timeout_seconds
+          Value: "300"
+      Tags:
+        - Key: Environment
+          Value: !Ref AWS::StackName
+        - Key: Service
+          Value: example-service
+
+  Listener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn: !Ref TargetGroup
+      LoadBalancerArn: !Ref LoadBalancer
+      Port: 80
+      Protocol: HTTP
+
+  ListenerHTTPS:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      Certificates:
+        - CertificateArn: !Ref SSLCertificateArn
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn: !Ref TargetGroup
+      LoadBalancerArn: !Ref LoadBalancer
+      Port: 443
+      Protocol: HTTPS
+
+  ECSService:
+    Type: AWS::ECS::Service
+    Properties:
+      Cluster: !Ref ECSClusterName
+      CapacityProviderStrategy:
+        - CapacityProvider: FARGATE
+          Base: 0
+          Weight: 1
+      TaskDefinition: !Ref TaskDefinition
+      ServiceName: !Ref ECSServiceName
+      SchedulingStrategy: REPLICA
+      DesiredCount: !Ref DesiredCount
+      AvailabilityZoneRebalancing: ENABLED
+      LoadBalancers:
+        - ContainerName: nextjs
+          ContainerPort: !Ref ContainerPort
+          TargetGroupArn: !GetAtt TargetGroup.TargetGroupArn
+      NetworkConfiguration:
+        AwsvpcConfiguration:
+          AssignPublicIp: ENABLED
+          SecurityGroups: !Ref SecurityGroupIDs
+          Subnets: !Ref SubnetIDs
+      PlatformVersion: LATEST
+      DeploymentConfiguration:
+        DeploymentCircuitBreaker:
+          Enable: true
+          Rollback: true
+        MaximumPercent: 200
+        MinimumHealthyPercent: 100
+      DeploymentController:
+        Type: ECS
+      ServiceConnectConfiguration:
+        Enabled: false
+      Tags:
+        - Key: Environment
+          Value: !Ref AWS::StackName
+        - Key: Service
+          Value: example-service
+      EnableECSManagedTags: true
+    DependsOn:
+      - Listener
+
+Outputs:
+  ECSCluster:
+    Description: The created cluster.
+    Value: !Ref ECSCluster
+
+  TaskDefinition:
+    Description: The created task definition.
+    Value: !Ref TaskDefinition
+
+  ClusterName:
+    Description: The cluster used to create the service.
+    Value: !Ref ECSClusterName
+
+  ECSService:
+    Description: The created service.
+    Value: !Ref ECSService
+
+  LoadBalancer:
+    Description: The created load balancer.
+    Value: !Ref LoadBalancer
+
+  LoadBalancerDNSName:
+    Description: The DNS name of the load balancer.
+    Value: !GetAtt LoadBalancer.DNSName
+
+  Listener:
+    Description: The created HTTP listener.
+    Value: !Ref Listener
+
+  ListenerHTTPS:
+    Description: The created HTTPS listener.
+    Value: !Ref ListenerHTTPS
+
+  TargetGroup:
+    Description: The created target group.
+    Value: !Ref TargetGroup
+
+  CloudWatchLogGroup:
+    Description: The created CloudWatch log group.
+    Value: !Ref CloudWatchLogGroup
+
+  ARecord:
+    Description: The created A record for the domain.
+    Value: !Ref ARecord

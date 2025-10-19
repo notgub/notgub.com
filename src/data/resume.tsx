@@ -117,7 +117,7 @@ export const DATA = {
       title: "AWS Certified Developer - Associate",
       issuer: "Amazon Web Services",
       issued: "June 2025",
-      validation: "e17c42fa8fa4434892cfd05c1c9da969",
+      link: "https://cp.certmetrics.com/amazon/en/public/verify/credential/e17c42fa8fa4434892cfd05c1c9da969",
     },
   ],
 

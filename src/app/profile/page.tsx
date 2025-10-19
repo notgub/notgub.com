@@ -39,6 +39,7 @@ export default function Page() {
           </div>
         </div>
       </section>
+
       <section id="about">
         <BlurFade delay={BLUR_FADE_DELAY * 3}>
           <h2 className="text-xl font-bold">About</h2>
@@ -49,6 +50,7 @@ export default function Page() {
           </Markdown>
         </BlurFade>
       </section>
+
       <section id="work">
         <div className="flex min-h-0 flex-col gap-y-3">
           <BlurFade delay={BLUR_FADE_DELAY * 5}>
@@ -74,6 +76,7 @@ export default function Page() {
           ))}
         </div>
       </section>
+
       <section id="education">
         <div className="flex min-h-0 flex-col gap-y-3">
           <BlurFade delay={BLUR_FADE_DELAY * 7}>
@@ -97,6 +100,46 @@ export default function Page() {
           ))}
         </div>
       </section>
+
+      <section id="certifications">
+        <div className="flex min-h-0 flex-col gap-y-3">
+          <BlurFade delay={BLUR_FADE_DELAY * 8.5}>
+            <h2 className="text-xl font-bold">Certifications</h2>
+          </BlurFade>
+
+          {DATA.certifications.map((cert, id) => (
+            <BlurFade key={cert.title} delay={BLUR_FADE_DELAY * 9 + id * 0.05}>
+              <div className="flex flex-col gap-1 rounded-lg border p-4 bg-card text-card-foreground shadow-sm">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                  <div>
+                    <h3 className="text-base font-semibold">{cert.title}</h3>
+                    <p className="text-sm text-muted-foreground">
+                      {cert.issuer}
+                    </p>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    Issued {cert.issued}
+                  </p>
+                </div>
+
+                {cert.link && (
+                  <div className="mt-2 text-sm">
+                    <Link
+                      href={cert.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-500 hover:underline"
+                    >
+                      Verify Credential
+                    </Link>
+                  </div>
+                )}
+              </div>
+            </BlurFade>
+          ))}
+        </div>
+      </section>
+
       <section id="skills">
         <div className="flex min-h-0 flex-col gap-y-3">
           <BlurFade delay={BLUR_FADE_DELAY * 9}>
@@ -111,6 +154,7 @@ export default function Page() {
           </div>
         </div>
       </section>
+
       <section id="projects">
         <div className="space-y-12 w-full py-12">
           <BlurFade delay={BLUR_FADE_DELAY * 11}>

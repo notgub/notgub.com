@@ -4,6 +4,7 @@ import { HomeIcon, NotebookIcon } from "lucide-react";
 export const DATA = {
   name: "Chanchai Thaiyanon",
   initials: "CT",
+  title: "notgub.com",
   url: "https://notgub.com",
   location: "Chiang Mai, TH",
   locationLink: "https://www.google.com/maps/place/Chiang+Mai",

@@ -1,5 +1,5 @@
 import { Icons } from "@/components/icons";
-import { HomeIcon, NotebookIcon } from "lucide-react";
+import { HomeIcon, FileTextIcon } from "lucide-react";
 
 export const DATA = {
   name: "Chanchai Thaiyanon",
@@ -31,6 +31,13 @@ export const DATA = {
     "Go",
   ],
   navbar: [{ href: "/profile", icon: HomeIcon, label: "Home" }],
+  download: [
+    {
+      href: "/Chanchai_Resume.pdf",
+      icon: FileTextIcon,
+      label: "Chanchai_Resume.pdf",
+    },
+  ],
   contact: {
     email: "chanchai.thaiyanon@gmail.com",
     tel: "+66883132513",

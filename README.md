@@ -1,47 +1,62 @@
-<div align="center">
-<img alt="Portfolio" src="https://github.com/dillionverma/portfolio/assets/16860528/57ffca81-3f0a-4425-b31d-094f61725455" width="90%">
-</div>
+# notgub.com
 
-# Portfolio [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fdillionverma%2Fportfolio)
+Personal portfolio and blog website built with modern web technologies. View it live at [notgub.com](https://notgub.com).
 
-Built with next.js, [shadcn/ui](https://ui.shadcn.com/), and [magic ui](https://magicui.design/), deployed on Vercel.
+## Technology Stack
 
-# Features
+- **Framework**: Next.js 14
+- **Language**: TypeScript
+- **UI Components**: 
+  - [shadcn/ui](https://ui.shadcn.com/)
+  - [Magic UI](https://magicui.design/)
+- **Styling**: TailwindCSS
+- **Animations**: Framer Motion
+- **Content**: MDX for blog posts
+- **Infrastructure**: AWS ECS with Docker
 
-- Setup only takes a few minutes by editing the [single config file](./src/data/resume.tsx)
-- Built using Next.js 14, React, Typescript, Shadcn/UI, TailwindCSS, Framer Motion, Magic UI
-- Includes a blog
-- Responsive for different devices
-- Optimized for Next.js and Vercel
+## Features
 
-# Getting Started Locally
+- Responsive design for all devices
+- Dark/Light mode support
+- Blog with MDX support
+- Interactive UI components
+- Portfolio and Resume sections
+- Docker containerization
+- AWS ECS deployment
 
-1. Clone this repository to your local machine:
+## Local Development
 
+1. Clone this repository:
    ```bash
-   git clone https://github.com/dillionverma/portfolio
+   git clone https://github.com/notgub/notgub.com.git
+   cd notgub.com
    ```
 
-2. Move to the cloned directory
-
-   ```bash
-   cd portfolio
-   ```
-
-3. Install dependencies:
-
+2. Install dependencies:
    ```bash
    pnpm install
    ```
 
-4. Start the local Server:
-
+3. Start the development server:
    ```bash
    pnpm dev
    ```
 
-5. Open the [Config file](./src/data/resume.tsx) and make changes
+4. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-# License
+## Deployment
 
-Licensed under the [MIT license](https://github.com/dillionverma/portfolio/blob/main/LICENSE.md).
+This project uses Docker for containerization and AWS ECS for deployment. The deployment process is automated using GitHub Actions.
+
+### Docker
+
+To build and run the Docker container locally:
+
+```bash
+docker build -t notgub.com .
+docker run -p 3000:3000 notgub.com
+```
+
+## License
+
+Licensed under the [MIT license](./LICENSE).

@@ -121,6 +121,12 @@ export const DATA = {
 
   certifications: [
     {
+      title: "AWS Certified Solutions Architect - Associate",
+      issuer: "Amazon Web Services",
+      issued: "December 2025",
+      link: "https://cp.certmetrics.com/amazon/en/public/verify/credential/e5ed88550deb46ca85127d4427b26507",
+    },
+    {
       title: "AWS Certified Developer - Associate",
       issuer: "Amazon Web Services",
       issued: "June 2025",
